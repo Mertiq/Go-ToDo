@@ -12,7 +12,7 @@ func GetTasks(c *fiber.Ctx) error {
 	postgres.DB.Find(&tasks)
 	return c.Status(fiber.StatusOK).JSON(fiber.Map{
 		"success": true,
-		"data":    tasks,
+		"result":  tasks,
 	})
 }
 
@@ -26,14 +26,15 @@ func GetTask(c *fiber.Ctx) error {
 			"message": "Task not found",
 		})
 	}
-	return c.Status(fiber.StatusOK).JSON(task)
+	return c.Status(fiber.StatusOK).JSON(fiber.Map{
+		"success": true,
+		"result":  task,
+	})
 }
 
 func CreateTask(c *fiber.Ctx) error {
 
-	var req struct {
-		Item string `json:"item"`
-	}
+	var req models.TaskRequest
 
 	if err := c.BodyParser(&req); err != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
@@ -59,7 +60,7 @@ func CreateTask(c *fiber.Ctx) error {
 	return c.Status(fiber.StatusOK).JSON(fiber.Map{
 		"success": true,
 		"message": "New task successfully created",
-		"data":    newTask,
+		"result":  newTask,
 	})
 }
 
